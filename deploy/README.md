@@ -30,9 +30,13 @@ This directory contains files for deploying Sub2API on Linux servers.
 The frontend includes a built-in user manual at `frontend/public/user-manual/`.
 
 - Access URL: `http://<your-domain>/user-manual/`
-- The manual opens in a new tab from the **API Keys** page via the **User Manual** button.
+- The manual opens in a new tab from:
+  - The **left sidebar** menu item **User Manual**（用户手册）
+  - The **top header** next to the **Docs** link
 - To customize the manual content (e.g., replace `https://www.llmferry.com` with your own domain), edit `frontend/public/user-manual/index.html` before building.
 - Images are served from `frontend/public/user-manual/assets/`.
+
+> **Important:** If `/user-manual/` returns a 404 page, the backend binary is serving an older `dist` build. Rebuild the frontend (`pnpm build`) and then rebuild the Go binary or Docker image so that `backend/internal/web/dist/user-manual/` is included in the embedded filesystem.
 
 ---
 
