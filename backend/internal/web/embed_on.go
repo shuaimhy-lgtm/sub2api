@@ -115,6 +115,21 @@ func (s *FrontendServer) Middleware() gin.HandlerFunc {
 }
 
 func (s *FrontendServer) fileExists(path string) bool {
+	// Try the path directly first.
+	if s.fileExistsRaw(path) {
+		return true
+	}
+
+	// For directory-like requests (with or without trailing slash),
+	// try the directory's index.html. This makes embedded static folders
+	// such as /user-manual/ work without requiring an exact file path.
+	if strings.HasSuffix(path, "/") {
+		return s.fileExistsRaw(path + "index.html")
+	}
+	return s.fileExistsRaw(path + "/index.html")
+}
+
+func (s *FrontendServer) fileExistsRaw(path string) bool {
 	file, err := s.distFS.Open(path)
 	if err != nil {
 		return false
