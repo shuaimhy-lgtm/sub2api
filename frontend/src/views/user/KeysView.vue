@@ -33,6 +33,15 @@
 
       <template #actions>
         <div class="flex justify-end gap-3">
+        <a
+          href="/user-manual/"
+          target="_blank"
+          rel="noopener noreferrer"
+          class="btn btn-secondary"
+        >
+          <Icon name="book" size="md" class="mr-2" />
+          {{ t('keys.userManual') }}
+        </a>
         <button
           @click="loadApiKeys"
           :disabled="loading"
@@ -1724,7 +1733,7 @@ const executeCcsImport = (row: ApiKey, clientType: CcSwitchClientType) => {
       };
     }
   })`
-  const providerName = (publicSettings.value?.site_name || 'sub2api').trim() || 'sub2api'
+  const providerName = (publicSettings.value?.site_name || 'llmferry').trim() || 'llmferry'
   const deeplink = buildCcSwitchImportDeeplink({
     baseUrl,
     platform,

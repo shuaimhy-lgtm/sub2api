@@ -25,6 +25,15 @@ This directory contains files for deploying Sub2API on Linux servers.
 | `DATAMANAGEMENTD_CN.md` | datamanagementd 部署与联动说明（中文） |
 | `config.example.yaml` | Example configuration file |
 
+## User Manual
+
+The frontend includes a built-in user manual at `frontend/public/user-manual/`.
+
+- Access URL: `http://<your-domain>/user-manual/`
+- The manual opens in a new tab from the **API Keys** page via the **User Manual** button.
+- To customize the manual content (e.g., replace `https://www.llmferry.com` with your own domain), edit `frontend/public/user-manual/index.html` before building.
+- Images are served from `frontend/public/user-manual/assets/`.
+
 ---
 
 ## Docker Deployment (Recommended)

@@ -1,0 +1,1257 @@
+<!doctype html>
+<html lang="zh-CN" data-theme="dark">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="LLMFerry 普通用户使用手册：登录简链服务，获取 API Key，并在 IDE、Codex、Claude Code 或代码中配置使用。">
+  <title>普通用户使用手册 | LLMFerry</title>
+  <style>
+    :root {
+      color-scheme: dark;
+      --bg: #090909;
+      --bg-elevated: #101010;
+      --bg-soft: #171717;
+      --text: #f4f4f1;
+      --text-soft: #b4b4ad;
+      --text-faint: #777772;
+      --line: #282826;
+      --line-strong: #3b3b37;
+      --code: #0c0c0c;
+      --accent: #b7f36b;
+      --accent-ink: #0d1605;
+      --warn: #f4cf6a;
+      --error: #ef7b75;
+      --ok: #8edc98;
+      --header-height: 112px;
+      --sidebar-width: 232px;
+      --toc-width: 212px;
+      --content-width: 780px;
+    }
+
+    html[data-theme="light"] {
+      color-scheme: light;
+      --bg: #ffffff;
+      --bg-elevated: #fafafa;
+      --bg-soft: #f3f3f1;
+      --text: #171715;
+      --text-soft: #595955;
+      --text-faint: #85857f;
+      --line: #e5e5e1;
+      --line-strong: #cacac4;
+      --code: #f7f7f4;
+      --accent: #416d00;
+      --accent-ink: #ffffff;
+      --warn: #8a6200;
+      --error: #b93630;
+      --ok: #2c7a3c;
+    }
+
+    * { box-sizing: border-box; }
+
+    html {
+      scroll-behavior: smooth;
+      scroll-padding-top: calc(var(--header-height) + 34px);
+    }
+
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--text);
+      font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      font-size: 15px;
+      line-height: 1.65;
+      letter-spacing: 0;
+      text-rendering: optimizeLegibility;
+    }
+
+    a { color: inherit; }
+    button, input { font: inherit; }
+    button { color: inherit; }
+    code, pre { font-family: "SFMono-Regular", Consolas, "Liberation Mono", monospace; }
+
+    .skip-link {
+      position: fixed;
+      top: 8px;
+      left: 8px;
+      z-index: 100;
+      padding: 8px 12px;
+      background: var(--text);
+      color: var(--bg);
+      transform: translateY(-150%);
+    }
+    .skip-link:focus { transform: translateY(0); }
+
+    .site-header {
+      position: fixed;
+      inset: 0 0 auto;
+      z-index: 40;
+      background: color-mix(in srgb, var(--bg) 92%, transparent);
+      border-bottom: 1px solid var(--line);
+      backdrop-filter: blur(16px);
+    }
+
+    .topbar,
+    .sectionbar {
+      display: flex;
+      align-items: center;
+      padding: 0 24px;
+    }
+
+    .topbar { height: 64px; gap: 26px; }
+    .sectionbar { height: 48px; justify-content: center; border-top: 1px solid var(--line); }
+
+    .brand {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      min-width: max-content;
+      text-decoration: none;
+      font-size: 20px;
+      font-weight: 700;
+      line-height: 1;
+    }
+
+    .brand-mark {
+      display: grid;
+      place-items: center;
+      width: 28px;
+      height: 28px;
+      border-radius: 6px;
+      background: var(--accent);
+      color: var(--accent-ink);
+      font-size: 13px;
+      font-weight: 800;
+    }
+
+    .primary-nav,
+    .section-nav { display: flex; align-items: center; gap: 6px; }
+    .primary-nav { margin-left: auto; }
+
+    .nav-link {
+      display: inline-flex;
+      align-items: center;
+      min-height: 34px;
+      padding: 6px 12px;
+      border-radius: 6px;
+      color: var(--text-soft);
+      text-decoration: none;
+      white-space: nowrap;
+    }
+    .nav-link:hover,
+    .nav-link[aria-current="page"] { background: var(--bg-soft); color: var(--text); }
+
+    .section-nav { height: 100%; gap: 30px; }
+    .section-nav a {
+      display: grid;
+      place-items: center;
+      height: 100%;
+      border-bottom: 2px solid transparent;
+      color: var(--text-soft);
+      text-decoration: none;
+      font-size: 14px;
+    }
+    .section-nav a:hover,
+    .section-nav a[aria-current="page"] { color: var(--text); border-color: var(--text); }
+
+    .icon-button,
+    .search-button,
+    .dashboard-button,
+    .copy-button,
+    .mobile-menu-button {
+      border: 1px solid var(--line);
+      background: var(--bg-elevated);
+      cursor: pointer;
+    }
+
+    .icon-button,
+    .mobile-menu-button {
+      display: inline-grid;
+      place-items: center;
+      width: 38px;
+      height: 38px;
+      border-radius: 6px;
+      font-size: 18px;
+    }
+    .icon-button:hover,
+    .mobile-menu-button:hover { border-color: var(--line-strong); background: var(--bg-soft); }
+
+    .search-button {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      width: min(260px, 21vw);
+      min-width: 170px;
+      height: 38px;
+      padding: 0 13px;
+      border-radius: 20px;
+      color: var(--text-faint);
+    }
+    .keycap {
+      padding: 0 5px;
+      border: 1px solid var(--line-strong);
+      border-radius: 4px;
+      color: var(--text-soft);
+      font-size: 11px;
+    }
+
+    .dashboard-button {
+      display: inline-flex;
+      align-items: center;
+      min-height: 38px;
+      padding: 7px 16px;
+      border-radius: 20px;
+      background: var(--text);
+      color: var(--bg);
+      text-decoration: none;
+      font-weight: 650;
+      white-space: nowrap;
+    }
+
+    .mobile-menu-button { display: none; }
+
+    .page-shell {
+      display: grid;
+      grid-template-columns: var(--sidebar-width) minmax(0, var(--content-width)) var(--toc-width);
+      justify-content: center;
+      gap: 44px;
+      min-height: 100vh;
+      padding: calc(var(--header-height) + 34px) 24px 96px;
+    }
+
+    .side-nav,
+    .toc {
+      position: sticky;
+      top: calc(var(--header-height) + 28px);
+      align-self: start;
+      max-height: calc(100vh - var(--header-height) - 48px);
+      overflow-y: auto;
+      scrollbar-width: thin;
+    }
+
+    .side-nav { padding-right: 18px; }
+    .side-nav h2 {
+      margin: 27px 0 8px;
+      color: var(--text);
+      font-size: 13px;
+      font-weight: 650;
+    }
+    .side-nav h2:first-child { margin-top: 0; }
+    .side-nav a {
+      display: block;
+      padding: 5px 8px;
+      border-radius: 4px;
+      color: var(--text-soft);
+      text-decoration: none;
+      font-size: 14px;
+    }
+    .side-nav a:hover,
+    .side-nav a.active { background: var(--bg-soft); color: var(--text); }
+
+    main { min-width: 0; }
+    .breadcrumb { margin-bottom: 22px; color: var(--text-faint); font-size: 13px; }
+    .breadcrumb a { text-decoration: none; }
+    .breadcrumb a:hover { color: var(--text); }
+
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 12px;
+      color: var(--accent);
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+    }
+    .eyebrow::before { content: ""; width: 22px; height: 1px; background: currentColor; }
+
+    h1, h2, h3 { letter-spacing: 0; overflow-wrap: anywhere; }
+    h1 { margin: 0 0 12px; font-size: 40px; line-height: 1.18; font-weight: 680; }
+    h2 { margin: 62px 0 18px; font-size: 25px; line-height: 1.3; font-weight: 660; }
+    h3 { margin: 32px 0 12px; font-size: 18px; line-height: 1.4; }
+    h4 { margin: 24px 0 8px; font-size: 15px; line-height: 1.45; color: var(--text); }
+    .lead { max-width: 700px; margin: 0 0 34px; color: var(--text-soft); font-size: 18px; line-height: 1.55; }
+
+    article p { margin: 0 0 18px; color: var(--text-soft); }
+    article a:not(.card-link) { color: var(--text); text-decoration-color: var(--text-faint); text-underline-offset: 3px; }
+    article code:not(pre code) {
+      padding: 2px 6px;
+      border: 1px solid var(--line);
+      border-radius: 4px;
+      background: var(--bg-soft);
+      color: var(--text);
+      font-size: .88em;
+      overflow-wrap: anywhere;
+      word-break: break-word;
+    }
+
+    .base-url {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      min-width: 0;
+      margin: 30px 0 10px;
+      padding: 14px 16px;
+      border: 1px solid var(--line-strong);
+      border-radius: 6px;
+      background: var(--bg-elevated);
+    }
+    .base-url-label {
+      flex: 0 0 auto;
+      color: var(--text-faint);
+      font-size: 12px;
+      font-weight: 700;
+      text-transform: uppercase;
+    }
+    .base-url code { overflow: hidden; color: var(--accent); text-overflow: ellipsis; white-space: nowrap; }
+
+    .callout {
+      margin: 26px 0;
+      padding: 16px 18px;
+      border-left: 3px solid var(--warn);
+      background: color-mix(in srgb, var(--warn) 8%, var(--bg-elevated));
+    }
+    .callout strong { display: block; margin-bottom: 3px; color: var(--text); }
+    .callout p { margin: 0; }
+    .callout.danger { border-left-color: var(--error); background: color-mix(in srgb, var(--error) 8%, var(--bg-elevated)); }
+    .callout.ok { border-left-color: var(--ok); background: color-mix(in srgb, var(--ok) 8%, var(--bg-elevated)); }
+
+    .quick-grid,
+    .figure-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 12px;
+      margin: 24px 0;
+    }
+
+    .quick-card,
+    .figure-card {
+      min-width: 0;
+      padding: 16px;
+      border: 1px solid var(--line);
+      border-radius: 6px;
+      background: var(--bg-elevated);
+    }
+    .quick-card strong,
+    .figure-card strong { display: block; margin-bottom: 6px; color: var(--text); }
+    .quick-card span,
+    .figure-card span { color: var(--text-soft); font-size: 13px; }
+    .quick-card code { overflow-wrap: anywhere; }
+
+    .steps { display: grid; gap: 0; min-width: 0; margin: 28px 0; counter-reset: step; }
+    .step {
+      position: relative;
+      min-width: 0;
+      padding: 0 0 28px 48px;
+      border-left: 1px solid var(--line);
+      margin-left: 15px;
+      counter-increment: step;
+    }
+    .step:last-child { border-color: transparent; padding-bottom: 0; }
+    .step::before {
+      content: counter(step);
+      position: absolute;
+      top: 0;
+      left: -16px;
+      display: grid;
+      place-items: center;
+      width: 31px;
+      height: 31px;
+      border: 1px solid var(--line-strong);
+      border-radius: 50%;
+      background: var(--bg);
+      color: var(--text);
+      font-size: 13px;
+      font-weight: 700;
+    }
+    .step h3 { margin-top: 2px; }
+    .step ul,
+    .checklist { margin: 8px 0 0; padding-left: 18px; color: var(--text-soft); }
+    .step li,
+    .checklist li { margin: 6px 0; }
+
+    .tabs {
+      display: inline-flex;
+      gap: 3px;
+      margin: 10px 0 12px;
+      padding: 3px;
+      border: 1px solid var(--line);
+      border-radius: 6px;
+      background: var(--bg-elevated);
+      max-width: 100%;
+      overflow-x: auto;
+    }
+    .tab {
+      min-width: max-content;
+      padding: 7px 13px;
+      border: 0;
+      border-radius: 4px;
+      background: transparent;
+      color: var(--text-soft);
+      cursor: pointer;
+      font-size: 13px;
+      font-weight: 600;
+      text-decoration: none;
+    }
+    .tab:hover { color: var(--text); }
+    .tab[aria-selected="true"] { background: var(--bg-soft); color: var(--text); }
+    [role="tabpanel"][hidden] { display: none; }
+
+    .code-block {
+      position: relative;
+      margin: 0 0 22px;
+      overflow: hidden;
+      border: 1px solid var(--line);
+      border-radius: 6px;
+      background: var(--code);
+    }
+    .code-caption {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      min-height: 40px;
+      padding: 8px 12px 8px 15px;
+      border-bottom: 1px solid var(--line);
+      color: var(--text-faint);
+      font-family: "SFMono-Regular", Consolas, monospace;
+      font-size: 11px;
+    }
+    .copy-button {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      min-height: 28px;
+      padding: 4px 9px;
+      border-radius: 4px;
+      color: var(--text-soft);
+      font-family: inherit;
+      font-size: 12px;
+    }
+    .copy-button:hover { border-color: var(--line-strong); color: var(--text); }
+    .copy-button[data-copied="true"] { color: var(--accent); }
+
+    pre { margin: 0; padding: 18px; overflow-x: auto; color: #d6d6d2; font-size: 13px; line-height: 1.7; tab-size: 2; }
+    html[data-theme="light"] pre { color: #353531; }
+    .token-keyword { color: #d6a6ff; }
+    .token-string { color: #a8d991; }
+    .token-prop { color: #8ec8ff; }
+    .token-comment { color: #72726d; }
+    .token-command { color: #f3c875; }
+    html[data-theme="light"] .token-keyword { color: #7d32a8; }
+    html[data-theme="light"] .token-string { color: #367728; }
+    html[data-theme="light"] .token-prop { color: #1263a3; }
+    html[data-theme="light"] .token-command { color: #855b00; }
+
+    .response-preview {
+      display: grid;
+      grid-template-columns: 150px minmax(0, 1fr);
+      margin: 20px 0 26px;
+      border: 1px solid var(--line);
+      border-radius: 6px;
+      overflow: hidden;
+    }
+    .response-preview dt,
+    .response-preview dd { margin: 0; padding: 11px 14px; border-bottom: 1px solid var(--line); }
+    .response-preview dt { background: var(--bg-elevated); color: var(--text-faint); font-size: 12px; font-weight: 650; }
+    .response-preview dd { color: var(--text-soft); font-family: "SFMono-Regular", Consolas, monospace; font-size: 12px; overflow-wrap: anywhere; }
+    .response-preview dt:last-of-type,
+    .response-preview dd:last-of-type { border-bottom: 0; }
+
+    .card-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; margin: 24px 0; }
+    .card-link {
+      display: block;
+      min-height: 124px;
+      padding: 18px;
+      border: 1px solid var(--line);
+      border-radius: 6px;
+      text-decoration: none;
+    }
+    .card-link:hover { border-color: var(--line-strong); background: var(--bg-elevated); }
+    .card-link strong { display: block; margin-bottom: 6px; }
+    .card-link span { color: var(--text-soft); font-size: 13px; }
+
+    figure {
+      margin: 26px 0;
+      padding: 0;
+    }
+    figure img {
+      display: block;
+      width: 100%;
+      height: auto;
+      border: 1px solid var(--line);
+      border-radius: 6px;
+      background: var(--bg-elevated);
+    }
+    figcaption {
+      margin-top: 8px;
+      color: var(--text-faint);
+      font-size: 12px;
+      line-height: 1.5;
+      text-align: center;
+    }
+    .figure-card { padding: 10px; }
+    .figure-card figure { margin: 0; }
+
+    .toc { padding-left: 18px; border-left: 1px solid var(--line); }
+    .toc strong { display: block; margin-bottom: 10px; font-size: 12px; }
+    .toc a { display: block; padding: 5px 0; color: var(--text-faint); text-decoration: none; font-size: 12px; line-height: 1.45; }
+    .toc a:hover,
+    .toc a.active { color: var(--text); }
+    .toc-tools { margin-top: 20px; padding-top: 16px; border-top: 1px solid var(--line); }
+    .toc-tools button { width: 100%; justify-content: center; }
+    .copy-row {
+      display: flex;
+      gap: 8px;
+      margin: 0 0 24px;
+      padding: 0;
+      border: 0;
+    }
+    .copy-row button { width: auto; }
+
+    .article-footer {
+      display: flex;
+      justify-content: space-between;
+      gap: 20px;
+      margin-top: 72px;
+      padding-top: 24px;
+      border-top: 1px solid var(--line);
+      color: var(--text-faint);
+      font-size: 12px;
+    }
+
+    dialog {
+      width: min(620px, calc(100vw - 32px));
+      padding: 0;
+      border: 1px solid var(--line-strong);
+      border-radius: 8px;
+      background: var(--bg-elevated);
+      color: var(--text);
+      box-shadow: 0 24px 80px rgba(0, 0, 0, .45);
+    }
+    dialog::backdrop { background: rgba(0, 0, 0, .66); backdrop-filter: blur(3px); }
+    .search-dialog-header { display: flex; gap: 8px; padding: 12px; border-bottom: 1px solid var(--line); }
+    .search-dialog input {
+      flex: 1;
+      min-width: 0;
+      padding: 10px 12px;
+      border: 0;
+      outline: 0;
+      background: transparent;
+      color: var(--text);
+    }
+    .search-results { min-height: 120px; max-height: 360px; padding: 8px; overflow-y: auto; }
+    .search-result { display: block; padding: 10px 12px; border-radius: 5px; text-decoration: none; }
+    .search-result:hover { background: var(--bg-soft); }
+    .search-result strong { display: block; }
+    .search-result small { color: var(--text-faint); }
+    .search-empty { padding: 28px 12px; color: var(--text-faint); text-align: center; }
+
+    .mobile-overlay { display: none; }
+
+    @media (max-width: 1160px) {
+      .page-shell { grid-template-columns: 210px minmax(0, var(--content-width)); gap: 36px; }
+      .toc { display: none; }
+      .primary-nav .nav-link { display: none; }
+    }
+
+    @media (max-width: 900px) {
+      :root { --header-height: 64px; }
+      .sectionbar { display: none; }
+      .page-shell { grid-template-columns: 1fr; max-width: 808px; margin: 0 auto; padding-top: calc(var(--header-height) + 30px); }
+      .side-nav { display: none; }
+      .search-button { margin-left: auto; width: 160px; min-width: 0; }
+      .dashboard-button { display: none; }
+    }
+
+    @media (max-width: 760px) {
+      .topbar { padding: 0 16px; gap: 10px; }
+      .brand { min-width: 0; font-size: 17px; }
+      .brand span:last-child { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+      .brand-mark { width: 26px; height: 26px; }
+      .search-button { width: 38px; min-width: 38px; padding: 0; justify-content: center; }
+      .search-button span:first-child,
+      .search-button .keycap { display: none; }
+      .theme-toggle { display: none; }
+      .mobile-menu-button { display: inline-grid; }
+      .page-shell { padding: 92px 18px 72px; }
+      h1 { font-size: 29px; line-height: 1.22; }
+      h2 { margin-top: 48px; font-size: 23px; }
+      .lead { font-size: 17px; }
+      .base-url { align-items: flex-start; flex-direction: column; gap: 5px; }
+      .base-url code { width: 100%; overflow-x: auto; text-overflow: clip; }
+      .quick-grid,
+      .figure-grid,
+      .card-grid { grid-template-columns: 1fr; }
+      .response-preview { grid-template-columns: 96px minmax(0, 1fr); }
+      .article-footer { flex-direction: column; }
+      .mobile-overlay {
+        position: fixed;
+        inset: var(--header-height) 0 0;
+        z-index: 35;
+        display: grid;
+        grid-template-columns: min(82vw, 320px) 1fr;
+        visibility: hidden;
+        opacity: 0;
+        transition: opacity .16s ease, visibility .16s ease;
+      }
+      .mobile-overlay.open { visibility: visible; opacity: 1; }
+      .mobile-panel { padding: 22px 18px 40px; overflow-y: auto; background: var(--bg); border-right: 1px solid var(--line); transform: translateX(-100%); transition: transform .2s ease; }
+      .mobile-overlay.open .mobile-panel { transform: translateX(0); }
+      .mobile-scrim { border: 0; background: rgba(0, 0, 0, .56); }
+      .mobile-panel .side-nav { position: static; display: block; max-height: none; padding: 0; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      html { scroll-behavior: auto; }
+      *, *::before, *::after { transition-duration: .01ms !important; }
+    }
+  </style>
+</head>
+<body>
+  <a class="skip-link" href="#main-content">跳到正文</a>
+
+  <header class="site-header">
+    <div class="topbar">
+      <button class="mobile-menu-button" type="button" aria-label="打开导航" aria-expanded="false" title="打开导航">☰</button>
+      <a class="brand" href="#overview" aria-label="LLMFerry 使用手册首页">
+        <span class="brand-mark" aria-hidden="true">LF</span>
+        <span>LLMFerry Guide</span>
+      </a>
+      <nav class="primary-nav" aria-label="主导航">
+        <a class="nav-link" href="#overview">首页</a>
+        <a class="nav-link" href="#login" aria-current="page">登录</a>
+        <a class="nav-link" href="#tools">工具配置</a>
+        <a class="nav-link" href="#code">代码调用</a>
+      </nav>
+      <button class="search-button" type="button" aria-label="搜索文档">
+        <span>搜索文档</span><span aria-hidden="true">⌕</span><span class="keycap">⌘ K</span>
+      </button>
+      <a class="dashboard-button" href="https://www.llmferry.com/home" target="_blank" rel="noreferrer">控制台 ↗</a>
+      <button class="icon-button theme-toggle" type="button" aria-label="切换主题" title="切换主题">◐</button>
+    </div>
+    <div class="sectionbar">
+      <nav class="section-nav" aria-label="页面分类">
+        <a href="#overview" aria-current="page">概览</a>
+        <a href="#login">登录</a>
+        <a href="#key">密钥</a>
+        <a href="#base-url">Base URL</a>
+        <a href="#windows">Windows</a>
+        <a href="#macos">macOS</a>
+        <a href="#code">代码</a>
+        <a href="#faq">排错</a>
+      </nav>
+    </div>
+  </header>
+
+  <div class="mobile-overlay" aria-hidden="true">
+    <div class="mobile-panel"></div>
+    <button class="mobile-scrim" type="button" aria-label="关闭侧边栏"></button>
+  </div>
+
+  <div class="page-shell">
+    <nav class="side-nav" aria-label="文档导航">
+      <h2>开始使用</h2>
+      <a class="active" href="#overview">一眼看懂 LLMFerry</a>
+      <a href="#login">登录控制台</a>
+      <a href="#key">创建和复制 API Key</a>
+      <h2>工具配置</h2>
+      <a href="#base-url">Base URL 怎么填</a>
+      <a href="#windows">Windows 用户</a>
+      <a href="#macos">macOS 用户</a>
+      <a href="#choose">不知道选哪种方式</a>
+      <h2>研发参考</h2>
+      <a href="#code">代码里调用</a>
+      <a href="#usage">查看用量</a>
+      <a href="#faq">常见问题</a>
+      <a href="#checklist">最小成功清单</a>
+    </nav>
+
+    <main id="main-content">
+      <div class="breadcrumb"><a href="#overview">LLMFerry</a> / 普通用户使用手册</div>
+      <article>
+        <section id="overview">
+          <div class="eyebrow">AI API Gateway</div>
+          <h1>LLMFerry 普通用户使用手册</h1>
+          <p class="lead">简链服务用于把企业的 AI 授权、密钥、模型和用量统一管理起来。普通用户只要登录控制台，复制自己的 API Key，再把它填到 IDE、Codex、Claude Code 或代码里即可。</p>
+
+          <div class="base-url">
+            <span class="base-url-label">控制台地址</span>
+            <code id="console-url">https://www.llmferry.com/home</code>
+            <button class="copy-button" type="button" data-copy-target="console-url" aria-label="复制控制台地址">复制</button>
+          </div>
+
+          <div class="quick-grid" aria-label="关键信息">
+            <div class="quick-card">
+              <strong>登录地址</strong>
+              <span>打开 <code>https://www.llmferry.com/home</code>，进入简链服务控制台。</span>
+            </div>
+            <div class="quick-card">
+              <strong>API Key</strong>
+              <span>通常以 <code>sk-</code> 开头，复制后粘贴到工具里。它等同于密码。</span>
+            </div>
+            <div class="quick-card">
+              <strong>OpenAI 兼容 Base URL</strong>
+              <span>IDE 插件、SDK、普通 HTTP 请求一般填 <code>https://www.llmferry.com/v1</code>。</span>
+            </div>
+            <div class="quick-card">
+              <strong>优先测试模型</strong>
+              <span>先用管理员指定模型；没有指定时可先尝试 <code>gpt-5.5</code>。</span>
+            </div>
+          </div>
+
+          <div class="callout danger">
+            <strong>不要把密码当成 API Key</strong>
+            <p>登录密码只用于进入控制台；IDE、代码和工具里要填的是你在控制台创建出来的 <code>sk-...</code> 密钥。</p>
+          </div>
+
+          <figure>
+            <img src="/user-manual/assets/llmferry-01-home.png" alt="LLMFerry 首页：简链服务、立即开始按钮和已支持模型列表">
+            <figcaption>LLMFerry 首页：确认进入的是“简链服务”站点。</figcaption>
+          </figure>
+        </section>
+
+        <section id="login">
+          <h2>登录 LLMFerry</h2>
+          <p>普通用户进入控制台后，主要关注「API 密钥」「使用记录」「渠道状态」「我的订阅」等个人使用菜单。管理员菜单不用操作。</p>
+
+          <dl class="response-preview">
+            <dt>登录地址</dt><dd id="login-url">https://www.llmferry.com/home</dd>
+            <dt>账号</dt><dd id="login-account">admin@sub2api.local</dd>
+            <dt>密码</dt><dd id="login-password">LS123xzhmu</dd>
+            <dt>站点名称</dt><dd>简链服务</dd>
+          </dl>
+
+          <div class="toc-tools copy-row">
+            <button class="copy-button" type="button" data-copy-target="login-url">复制地址</button>
+            <button class="copy-button" type="button" data-copy-target="login-account">复制账号</button>
+            <button class="copy-button" type="button" data-copy-target="login-password">复制密码</button>
+          </div>
+
+          <div class="steps">
+            <div class="step">
+              <h3>打开控制台</h3>
+              <p>在浏览器访问 <code>https://www.llmferry.com/home</code>。如果页面没有自动跳到登录页，点击右上角「登录」。</p>
+            </div>
+            <div class="step">
+              <h3>输入账号密码</h3>
+              <p>使用管理员提供的账号登录。正式给客户使用时，建议换成每位用户自己的企业账号。</p>
+            </div>
+            <div class="step">
+              <h3>找到个人菜单</h3>
+              <p>登录成功后，普通用户主要看「我的账户」下面的菜单：API 密钥、使用记录、渠道状态、我的订阅、兑换。</p>
+            </div>
+          </div>
+
+          <div class="callout">
+            <strong>给客户发正式版前先确认账号策略</strong>
+            <p>如果这个账号只用于演示或培训，请不要把它长期公开到客户群；正式环境建议让客户使用企业邮箱或单独账号登录。</p>
+          </div>
+
+          <figure>
+            <img src="/user-manual/assets/llmferry-02-login.png" alt="LLMFerry 登录页：输入邮箱和密码后点击登录">
+            <figcaption>登录页：输入企业邮箱和密码，点击「登录」。</figcaption>
+          </figure>
+        </section>
+
+        <section id="key">
+          <h2>创建和复制 API Key</h2>
+          <p>API Key 是每个工具真正用来访问 AI 服务的凭证。普通用户可以按用途创建不同密钥，例如「张三-Codex」「客服机器人-测试」。</p>
+
+          <div class="steps">
+            <div class="step">
+              <h3>进入 API 密钥页面</h3>
+              <p>登录后，在左侧菜单找到「API 密钥」。如果看不到，请联系管理员确认账号权限或套餐分组。</p>
+            </div>
+            <div class="step">
+              <h3>点击创建密钥</h3>
+              <p>名称写清楚用途；分组选择管理员指定的分组；普通用户通常不用开启「自定义密钥」。</p>
+            </div>
+            <div class="step">
+              <h3>复制 sk- 开头的密钥</h3>
+              <p>创建后在列表里复制完整密钥。后面配置 IDE、Codex、Claude Code 或代码时，都要粘贴这个值。</p>
+            </div>
+            <div class="step">
+              <h3>不用或泄露时及时禁用</h3>
+              <p>发现密钥被外发、提交到代码仓库、截图泄露，先禁用旧密钥，再创建新密钥。</p>
+            </div>
+          </div>
+
+          <div class="figure-grid">
+            <div class="figure-card">
+              <figure>
+                <img src="/user-manual/assets/llmferry-03-api-key-page.png" alt="LLMFerry API 密钥页面：左侧进入 API 密钥，右上角创建密钥">
+                <figcaption>API 密钥页面：入口和创建按钮位置示意。</figcaption>
+              </figure>
+            </div>
+            <div class="figure-card">
+              <figure>
+                <img src="/user-manual/assets/llmferry-04-create-key-modal.png" alt="LLMFerry 创建密钥弹窗：填写名称、选择分组和配置限制">
+                <figcaption>创建密钥：重点确认名称、分组、额度和有效期。</figcaption>
+              </figure>
+            </div>
+          </div>
+        </section>
+
+        <section id="base-url">
+          <h2>Base URL 怎么填</h2>
+          <p>很多配置失败都不是 Key 错，而是 Base URL 写错。记住：<code>/home</code> 是网页登录地址，不要填进 API Base URL。</p>
+
+          <dl class="response-preview">
+            <dt>网页登录</dt><dd>https://www.llmferry.com/home</dd>
+            <dt>IDE 插件 / SDK</dt><dd id="api-base-url">https://www.llmferry.com/v1</dd>
+            <dt>普通 HTTP 请求</dt><dd>https://www.llmferry.com/v1</dd>
+            <dt>Codex 配置</dt><dd>https://www.llmferry.com</dd>
+            <dt>Claude Code 环境变量</dt><dd>https://www.llmferry.com</dd>
+            <dt>CC Switch Provider</dt><dd>https://www.llmferry.com/</dd>
+          </dl>
+
+          <div class="callout ok">
+            <strong>最简单判断</strong>
+            <p>工具里如果写着「OpenAI Compatible / OpenAI 兼容」，通常填 <code>https://www.llmferry.com/v1</code>。</p>
+          </div>
+        </section>
+
+        <section id="tools">
+          <h2>非代码方式使用：先看自己的系统</h2>
+          <p>这一部分给“不写代码，只想在 IDE、Codex、Claude Code 里直接用”的用户。先选 Windows 或 macOS，再按对应步骤配置。</p>
+
+          <div class="tabs" aria-label="系统选择">
+            <a class="tab" href="#windows" aria-selected="true">Windows</a>
+            <a class="tab" href="#macos" aria-selected="false">macOS</a>
+          </div>
+        </section>
+
+        <section id="windows">
+          <h2>Windows 用户</h2>
+
+          <h3>方式 A：普通 IDE 插件</h3>
+          <p>适合 VS Code、JetBrains、Cursor 等支持「OpenAI Compatible」或「自定义 API 地址」的插件。</p>
+          <dl class="response-preview">
+            <dt>Provider</dt><dd>OpenAI Compatible / OpenAI 兼容</dd>
+            <dt>API Key</dt><dd>粘贴你的 sk-... 密钥</dd>
+            <dt>Base URL</dt><dd>https://www.llmferry.com/v1</dd>
+            <dt>Model</dt><dd>先填管理员指定模型；没有指定时先试 gpt-5.5</dd>
+            <dt>测试问题</dt><dd>Reply with exactly: pong</dd>
+          </dl>
+
+          <h3>方式 B：Codex / ChatGPT 编程助手</h3>
+          <p>在「API 密钥」页面找到密钥，点击「使用密钥」，选择 Codex CLI 和 Windows。按页面提示复制到下面两个文件。</p>
+
+          <figure>
+            <img src="/user-manual/assets/llmferry-06-use-key-modal-windows.png" alt="LLMFerry 使用 API 密钥弹窗：Windows 配置示例">
+            <figcaption>使用 API 密钥弹窗：Windows 用户选择「Windows」后复制对应配置。</figcaption>
+          </figure>
+
+          <div class="code-block">
+            <div class="code-caption"><span>%USERPROFILE%\.codex\config.toml</span><button class="copy-button" type="button" data-copy-target="code-win-codex-config">复制</button></div>
+            <pre><code id="code-win-codex-config">model_provider = "OpenAI"
+model = "gpt-5.5"
+review_model = "gpt-5.5"
+model_reasoning_effort = "xhigh"
+disable_response_storage = true
+network_access = "enabled"
+windows_wsl_setup_acknowledged = true
+
+[model_providers.OpenAI]
+name = "OpenAI"
+base_url = "https://www.llmferry.com"
+wire_api = "responses"
+requires_openai_auth = true
+
+[features]
+goals = true</code></pre>
+          </div>
+
+          <div class="code-block">
+            <div class="code-caption"><span>%USERPROFILE%\.codex\auth.json</span><button class="copy-button" type="button" data-copy-target="code-win-codex-auth">复制</button></div>
+            <pre><code id="code-win-codex-auth">{
+  "OPENAI_API_KEY": "sk-你的密钥"
+}</code></pre>
+          </div>
+
+          <p>如果你在 Windows 里使用 WSL，通常按 macOS / Linux 路径处理 WSL 内部配置。</p>
+
+          <h3>方式 C：Claude Code / CC Switch</h3>
+          <p>不想手动改配置文件时，优先用 CC Switch。添加供应商时名称填 <code>LLMFerry</code>，Base URL 填 <code>https://www.llmferry.com/</code>，API Key 填你的 <code>sk-...</code>。</p>
+
+          <div class="code-block">
+            <div class="code-caption"><span>Windows PowerShell 临时生效</span><button class="copy-button" type="button" data-copy-target="code-win-claude-env">复制</button></div>
+            <pre><code id="code-win-claude-env">$env:ANTHROPIC_BASE_URL = "https://www.llmferry.com"
+$env:ANTHROPIC_AUTH_TOKEN = "sk-你的密钥"
+$env:CLAUDE_CODE_DISABLE_NONESSENTIAL_TRAFFIC = "1"
+$env:CLAUDE_CODE_ATTRIBUTION_HEADER = "0"</code></pre>
+          </div>
+
+          <div class="code-block">
+            <div class="code-caption"><span>%USERPROFILE%\.claude\settings.json</span><button class="copy-button" type="button" data-copy-target="code-win-claude-settings">复制</button></div>
+            <pre><code id="code-win-claude-settings">{
+  "env": {
+    "ANTHROPIC_BASE_URL": "https://www.llmferry.com",
+    "ANTHROPIC_AUTH_TOKEN": "sk-你的密钥",
+    "CLAUDE_CODE_DISABLE_NONESSENTIAL_TRAFFIC": "1",
+    "CLAUDE_CODE_ATTRIBUTION_HEADER": "0"
+  }
+}</code></pre>
+          </div>
+        </section>
+
+        <section id="macos">
+          <h2>macOS 用户</h2>
+
+          <h3>方式 A：普通 IDE 插件</h3>
+          <p>和 Windows 一样，普通 IDE 插件只需要填服务商、API Key、Base URL 和模型。</p>
+          <dl class="response-preview">
+            <dt>Provider</dt><dd>OpenAI Compatible / OpenAI 兼容</dd>
+            <dt>API Key</dt><dd>粘贴你的 sk-... 密钥</dd>
+            <dt>Base URL</dt><dd>https://www.llmferry.com/v1</dd>
+            <dt>Model</dt><dd>先填管理员指定模型；没有指定时先试 gpt-5.5</dd>
+            <dt>测试问题</dt><dd>Reply with exactly: pong</dd>
+          </dl>
+
+          <h3>方式 B：Codex / ChatGPT 编程助手</h3>
+          <p>在「API 密钥」页面点击「使用密钥」，选择 Codex CLI 和 macOS / Linux。配置目录是 <code>~/.codex</code>；如果文件夹不存在，先运行 <code>mkdir -p ~/.codex</code>。</p>
+
+          <figure>
+            <img src="/user-manual/assets/llmferry-05-use-key-modal-macos.png" alt="LLMFerry 使用 API 密钥弹窗：macOS 和 Linux 配置示例">
+            <figcaption>使用 API 密钥弹窗：macOS 用户选择「macOS / Linux」后复制对应配置。</figcaption>
+          </figure>
+
+          <div class="code-block">
+            <div class="code-caption"><span>~/.codex/config.toml</span><button class="copy-button" type="button" data-copy-target="code-mac-codex-config">复制</button></div>
+            <pre><code id="code-mac-codex-config">model_provider = "OpenAI"
+model = "gpt-5.5"
+review_model = "gpt-5.5"
+model_reasoning_effort = "xhigh"
+disable_response_storage = true
+network_access = "enabled"
+windows_wsl_setup_acknowledged = true
+
+[model_providers.OpenAI]
+name = "OpenAI"
+base_url = "https://www.llmferry.com"
+wire_api = "responses"
+requires_openai_auth = true
+
+[features]
+goals = true</code></pre>
+          </div>
+
+          <div class="code-block">
+            <div class="code-caption"><span>~/.codex/auth.json</span><button class="copy-button" type="button" data-copy-target="code-mac-codex-auth">复制</button></div>
+            <pre><code id="code-mac-codex-auth">{
+  "OPENAI_API_KEY": "sk-你的密钥"
+}</code></pre>
+          </div>
+
+          <p>Finder 打开配置目录：按 <code>Command + Shift + G</code>，输入 <code>~/.codex</code>。</p>
+
+          <h3>方式 C：Claude Code / CC Switch</h3>
+          <p>macOS 用户也推荐优先用 CC Switch。供应商名称填 <code>LLMFerry</code>，Base URL 填 <code>https://www.llmferry.com/</code>，模型映射按管理员要求填写。</p>
+
+          <div class="code-block">
+            <div class="code-caption"><span>macOS 终端临时生效</span><button class="copy-button" type="button" data-copy-target="code-mac-claude-env">复制</button></div>
+            <pre><code id="code-mac-claude-env">export ANTHROPIC_BASE_URL="https://www.llmferry.com"
+export ANTHROPIC_AUTH_TOKEN="sk-你的密钥"
+export CLAUDE_CODE_DISABLE_NONESSENTIAL_TRAFFIC=1
+export CLAUDE_CODE_ATTRIBUTION_HEADER=0</code></pre>
+          </div>
+
+          <div class="code-block">
+            <div class="code-caption"><span>~/.claude/settings.json</span><button class="copy-button" type="button" data-copy-target="code-mac-claude-settings">复制</button></div>
+            <pre><code id="code-mac-claude-settings">{
+  "env": {
+    "ANTHROPIC_BASE_URL": "https://www.llmferry.com",
+    "ANTHROPIC_AUTH_TOKEN": "sk-你的密钥",
+    "CLAUDE_CODE_DISABLE_NONESSENTIAL_TRAFFIC": "1",
+    "CLAUDE_CODE_ATTRIBUTION_HEADER": "0"
+  }
+}</code></pre>
+          </div>
+        </section>
+
+        <section id="choose">
+          <h2>不知道自己该选哪种方式</h2>
+          <p>按下面顺序选，最不容易出错。</p>
+          <div class="steps">
+            <div class="step">
+              <h3>只是给 IDE 插件填配置</h3>
+              <p>看 Windows 或 macOS 里的「普通 IDE 插件」，Base URL 用 <code>https://www.llmferry.com/v1</code>。</p>
+            </div>
+            <div class="step">
+              <h3>使用 Codex 或 ChatGPT 编程助手</h3>
+              <p>看「Codex / ChatGPT 编程助手」，按系统复制到 <code>.codex</code> 配置文件。</p>
+            </div>
+            <div class="step">
+              <h3>使用 Claude Code</h3>
+              <p>优先用 CC Switch；管理员要求手动配置时，再写环境变量或 <code>settings.json</code>。</p>
+            </div>
+          </div>
+        </section>
+
+        <section id="code">
+          <h2>在代码里调用</h2>
+          <p>这一部分主要给研发同事。普通用户只需要把下面 4 个信息交给研发即可。</p>
+
+          <dl class="response-preview">
+            <dt>API Key</dt><dd>你的 sk-... 密钥</dd>
+            <dt>Base URL</dt><dd>https://www.llmferry.com/v1</dd>
+            <dt>模型</dt><dd>管理员指定模型，或先用 gpt-5.5 测试</dd>
+            <dt>协议</dt><dd>OpenAI 兼容接口</dd>
+          </dl>
+
+          <div class="tabs" role="tablist" aria-label="代码语言">
+            <button class="tab" id="code-js-tab" role="tab" aria-selected="true" aria-controls="code-js" data-tab-group="code" data-tab="js">JavaScript</button>
+            <button class="tab" id="code-python-tab" role="tab" aria-selected="false" aria-controls="code-python" data-tab-group="code" data-tab="python">Python</button>
+            <button class="tab" id="code-curl-tab" role="tab" aria-selected="false" aria-controls="code-curl" data-tab-group="code" data-tab="curl">cURL</button>
+          </div>
+
+          <div id="code-js" role="tabpanel" aria-labelledby="code-js-tab" data-panel-group="code" data-panel="js">
+            <div class="code-block">
+              <div class="code-caption"><span>安装</span><button class="copy-button" type="button" data-copy-target="code-js-install">复制</button></div>
+              <pre><code id="code-js-install">npm install openai</code></pre>
+            </div>
+            <div class="code-block">
+              <div class="code-caption"><span>client.mjs</span><button class="copy-button" type="button" data-copy-target="code-js-client">复制</button></div>
+              <pre><code id="code-js-client">import OpenAI from "openai";
+
+const client = new OpenAI({
+  apiKey: process.env.OPENAI_API_KEY,
+  baseURL: "https://www.llmferry.com/v1",
+});
+
+const response = await client.chat.completions.create({
+  model: "gpt-5.5",
+  messages: [{ role: "user", content: "Reply with exactly: pong" }],
+});
+
+console.log(response.choices[0].message.content);</code></pre>
+            </div>
+          </div>
+
+          <div id="code-python" role="tabpanel" aria-labelledby="code-python-tab" data-panel-group="code" data-panel="python" hidden>
+            <div class="code-block">
+              <div class="code-caption"><span>安装</span><button class="copy-button" type="button" data-copy-target="code-python-install">复制</button></div>
+              <pre><code id="code-python-install">pip install openai</code></pre>
+            </div>
+            <div class="code-block">
+              <div class="code-caption"><span>client.py</span><button class="copy-button" type="button" data-copy-target="code-python-client">复制</button></div>
+              <pre><code id="code-python-client">import os
+from openai import OpenAI
+
+client = OpenAI(
+    api_key=os.environ["OPENAI_API_KEY"],
+    base_url="https://www.llmferry.com/v1",
+)
+
+response = client.chat.completions.create(
+    model="gpt-5.5",
+    messages=[{"role": "user", "content": "Reply with exactly: pong"}],
+)
+
+print(response.choices[0].message.content)</code></pre>
+            </div>
+          </div>
+
+          <div id="code-curl" role="tabpanel" aria-labelledby="code-curl-tab" data-panel-group="code" data-panel="curl" hidden>
+            <div class="code-block">
+              <div class="code-caption"><span>macOS / Linux 环境变量</span><button class="copy-button" type="button" data-copy-target="code-curl-env-mac">复制</button></div>
+              <pre><code id="code-curl-env-mac">export OPENAI_API_KEY="sk-你的密钥"
+export OPENAI_BASE_URL="https://www.llmferry.com/v1"</code></pre>
+            </div>
+            <div class="code-block">
+              <div class="code-caption"><span>Windows PowerShell 环境变量</span><button class="copy-button" type="button" data-copy-target="code-curl-env-win">复制</button></div>
+              <pre><code id="code-curl-env-win">$env:OPENAI_API_KEY = "sk-你的密钥"
+$env:OPENAI_BASE_URL = "https://www.llmferry.com/v1"</code></pre>
+            </div>
+            <div class="code-block">
+              <div class="code-caption"><span>发送测试请求</span><button class="copy-button" type="button" data-copy-target="code-curl-request">复制</button></div>
+              <pre><code id="code-curl-request">curl https://www.llmferry.com/v1/chat/completions \
+  -H "Authorization: Bearer $OPENAI_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "model": "gpt-5.5",
+    "messages": [
+      {"role": "user", "content": "Reply with exactly: pong"}
+    ]
+  }'</code></pre>
+            </div>
+          </div>
+        </section>
+
+        <section id="usage">
+          <h2>查看用量和费用</h2>
+          <p>配置成功后，回到控制台的「使用记录」查看每次调用的模型、时间、Token 和费用。如果发现异常高用量，先禁用对应 API Key，再联系管理员排查。</p>
+        </section>
+
+        <section id="faq">
+          <h2>常见问题</h2>
+          <dl class="response-preview">
+            <dt>401</dt><dd>API Key 没填、填错、复制少字符，或认证格式不对。重新复制完整 sk-... 再试。</dd>
+            <dt>404</dt><dd>Base URL 或模型名写错。OpenAI 兼容场景要用 https://www.llmferry.com/v1。</dd>
+            <dt>429</dt><dd>请求太频繁或额度受限。稍等再试，或联系管理员调整额度、并发或速率限制。</dd>
+            <dt>5xx</dt><dd>服务临时异常。稍后重试；如果一直失败，查看渠道状态或联系管理员。</dd>
+            <dt>在家不能用</dt><dd>可能密钥开启了 IP 限制。连接公司 VPN 后再试，或联系管理员调整。</dd>
+            <dt>前端网页能写 Key 吗</dt><dd>不能。前端、浏览器 JavaScript、移动端安装包都容易暴露 Key，应由后端代调。</dd>
+          </dl>
+        </section>
+
+        <section id="checklist">
+          <h2>最小成功检查清单</h2>
+          <ul class="checklist">
+            <li>能打开并登录 <code>https://www.llmferry.com/home</code></li>
+            <li>能进入「API 密钥」页面</li>
+            <li>能复制到以 <code>sk-</code> 开头的 API Key</li>
+            <li>IDE 或工具里 API Key 已填写完整</li>
+            <li>Base URL 没写错，尤其注意不要把 <code>/home</code> 填进去</li>
+            <li>模型先用管理员指定模型或 <code>gpt-5.5</code> 测试</li>
+            <li>测试问题 <code>Reply with exactly: pong</code> 能正常返回</li>
+            <li>「使用记录」里能看到刚才的调用记录</li>
+          </ul>
+
+          <div class="card-grid">
+            <a class="card-link" href="#key"><strong>下一步：拿到 API Key →</strong><span>先登录控制台，再创建或复制自己的 sk-... 密钥。</span></a>
+            <a class="card-link" href="#tools"><strong>下一步：配置工具 →</strong><span>按系统选择 Windows 或 macOS，照着路径和示例填。</span></a>
+          </div>
+        </section>
+
+        <footer class="article-footer">
+          <span>LLMFerry 普通用户使用手册</span>
+          <span>控制台：https://www.llmferry.com/home</span>
+        </footer>
+      </article>
+    </main>
+
+    <aside class="toc" aria-label="本页目录">
+      <strong>本页内容</strong>
+      <a class="active" href="#overview">一眼看懂</a>
+      <a href="#login">登录控制台</a>
+      <a href="#key">创建 API Key</a>
+      <a href="#base-url">Base URL</a>
+      <a href="#windows">Windows 配置</a>
+      <a href="#macos">macOS 配置</a>
+      <a href="#code">代码调用</a>
+      <a href="#faq">常见问题</a>
+      <a href="#checklist">检查清单</a>
+      <div class="toc-tools">
+        <button class="copy-button" type="button" data-copy-target="api-base-url" aria-label="复制 API Base URL">复制 API Base URL</button>
+      </div>
+    </aside>
+  </div>
+
+  <dialog class="search-dialog" aria-label="搜索文档">
+    <div class="search-dialog-header">
+      <input type="search" autocomplete="off" placeholder="搜索标题，例如“Windows”" aria-label="搜索关键词">
+      <button class="icon-button search-close" type="button" aria-label="关闭搜索" title="关闭搜索">×</button>
+    </div>
+    <div class="search-results" aria-live="polite"></div>
+  </dialog>
+
+  <script>
+    (() => {
+      const root = document.documentElement;
+      const themeButtons = document.querySelectorAll(".theme-toggle");
+      const storedTheme = localStorage.getItem("llmferry-theme");
+      if (storedTheme === "light" || storedTheme === "dark") root.dataset.theme = storedTheme;
+
+      themeButtons.forEach((button) => {
+        button.addEventListener("click", () => {
+          root.dataset.theme = root.dataset.theme === "dark" ? "light" : "dark";
+          localStorage.setItem("llmferry-theme", root.dataset.theme);
+        });
+      });
+
+      document.querySelectorAll("[data-tab-group]").forEach((tab) => {
+        tab.addEventListener("click", () => {
+          const group = tab.dataset.tabGroup;
+          const value = tab.dataset.tab;
+          document.querySelectorAll(`[data-tab-group="${group}"]`).forEach((item) => {
+            item.setAttribute("aria-selected", String(item === tab));
+          });
+          document.querySelectorAll(`[data-panel-group="${group}"]`).forEach((panel) => {
+            panel.hidden = panel.dataset.panel !== value;
+          });
+        });
+      });
+
+      document.querySelectorAll("[data-copy-target]").forEach((button) => {
+        button.addEventListener("click", async () => {
+          const target = document.getElementById(button.dataset.copyTarget);
+          if (!target) return;
+          try {
+            await navigator.clipboard.writeText(target.innerText);
+            button.dataset.copied = "true";
+            const previous = button.textContent;
+            button.textContent = "已复制";
+            window.setTimeout(() => {
+              button.dataset.copied = "false";
+              button.textContent = previous;
+            }, 1400);
+          } catch {
+            button.textContent = "复制失败";
+          }
+        });
+      });
+
+      const menuButton = document.querySelector(".mobile-menu-button");
+      const overlay = document.querySelector(".mobile-overlay");
+      const mobilePanel = document.querySelector(".mobile-panel");
+      const mobileNav = document.querySelector(".side-nav").cloneNode(true);
+      mobilePanel.appendChild(mobileNav);
+
+      const setMenu = (open) => {
+        overlay.classList.toggle("open", open);
+        overlay.setAttribute("aria-hidden", String(!open));
+        menuButton.setAttribute("aria-expanded", String(open));
+        menuButton.setAttribute("aria-label", open ? "关闭导航" : "打开导航");
+        document.body.style.overflow = open ? "hidden" : "";
+      };
+      menuButton.addEventListener("click", () => setMenu(!overlay.classList.contains("open")));
+      overlay.querySelector(".mobile-scrim").addEventListener("click", () => setMenu(false));
+      mobilePanel.querySelectorAll("a").forEach((link) => link.addEventListener("click", () => setMenu(false)));
+
+      const dialog = document.querySelector(".search-dialog");
+      const searchInput = dialog.querySelector("input");
+      const results = dialog.querySelector(".search-results");
+      const sections = [...document.querySelectorAll("article section[id]")].map((section) => ({
+        id: section.id,
+        title: section.querySelector("h1, h2")?.textContent || section.id,
+        summary: section.querySelector("p")?.textContent || "",
+      }));
+
+      const renderSearch = (query = "") => {
+        const normalized = query.trim().toLowerCase();
+        const matches = sections.filter((item) => !normalized || `${item.title} ${item.summary}`.toLowerCase().includes(normalized));
+        results.innerHTML = matches.length
+          ? matches.map((item) => `<a class="search-result" href="#${item.id}"><strong>${item.title}</strong><small>${item.summary.slice(0, 68)}${item.summary.length > 68 ? "..." : ""}</small></a>`).join("")
+          : '<div class="search-empty">没有找到匹配内容</div>';
+        results.querySelectorAll("a").forEach((link) => link.addEventListener("click", () => dialog.close()));
+      };
+
+      const openSearch = () => {
+        setMenu(false);
+        renderSearch();
+        dialog.showModal();
+        searchInput.focus();
+      };
+      document.querySelector(".search-button").addEventListener("click", openSearch);
+      dialog.querySelector(".search-close").addEventListener("click", () => dialog.close());
+      searchInput.addEventListener("input", () => renderSearch(searchInput.value));
+      document.addEventListener("keydown", (event) => {
+        if ((event.metaKey || event.ctrlKey) && event.key.toLowerCase() === "k") {
+          event.preventDefault();
+          dialog.open ? dialog.close() : openSearch();
+        }
+      });
+
+      const observedSections = [...document.querySelectorAll("article section[id]")];
+      const sectionLinks = [...document.querySelectorAll(".side-nav a, .toc a")];
+      const observer = new IntersectionObserver((entries) => {
+        const visible = entries.filter((entry) => entry.isIntersecting).sort((a, b) => a.boundingClientRect.top - b.boundingClientRect.top)[0];
+        if (!visible) return;
+        sectionLinks.forEach((link) => link.classList.toggle("active", link.getAttribute("href") === `#${visible.target.id}`));
+      }, { rootMargin: "-18% 0px -72%", threshold: 0 });
+      observedSections.forEach((section) => observer.observe(section));
+    })();
+  </script>
+</body>
+</html>

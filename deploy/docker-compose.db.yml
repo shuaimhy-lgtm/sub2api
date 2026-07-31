@@ -1,0 +1,96 @@
+# =============================================================================
+# Sub2API Docker Compose - Database & Redis Only
+# =============================================================================
+# 仅部署 PostgreSQL + Redis，sub2api 应用在容器外运行（源码/二进制直接运行）。
+#
+# Quick Start:
+#   1. cp .env.example .env  并修改 POSTGRES_PASSWORD / REDIS_PASSWORD 等
+#   2. mkdir -p postgres_data redis_data
+#   3. docker compose -f docker-compose.db.yml up -d
+#   4. 查看日志: docker compose -f docker-compose.db.yml logs -f
+#
+# 应用端连接配置（sub2api .env 或环境变量）:
+#   DATABASE_HOST=127.0.0.1
+#   DATABASE_PORT=5432
+#   REDIS_HOST=127.0.0.1
+#   REDIS_PORT=6379
+# =============================================================================
+
+services:
+  # ===========================================================================
+  # PostgreSQL Database
+  # ===========================================================================
+  postgres:
+    image: postgres:18-alpine
+    container_name: sub2api-postgres
+    restart: unless-stopped
+    ulimits:
+      nofile:
+        soft: 100000
+        hard: 100000
+    ports:
+      - "${DATABASE_PORT:-5432}:5432"
+    volumes:
+      - ./postgres_data:/var/lib/postgresql/data:Z
+    environment:
+      - POSTGRES_USER=${POSTGRES_USER:-sub2api}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD:?POSTGRES_PASSWORD is required}
+      - POSTGRES_DB=${POSTGRES_DB:-sub2api}
+      - PGDATA=/var/lib/postgresql/data
+      - TZ=${TZ:-Asia/Shanghai}
+    command: >
+      postgres
+      -c max_connections=${POSTGRES_MAX_CONNECTIONS:-1024}
+      -c shared_buffers=${POSTGRES_SHARED_BUFFERS:-1GB}
+      -c effective_cache_size=${POSTGRES_EFFECTIVE_CACHE_SIZE:-4GB}
+      -c maintenance_work_mem=${POSTGRES_MAINTENANCE_WORK_MEM:-128MB}
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-sub2api} -d ${POSTGRES_DB:-sub2api}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+    networks:
+      - sub2api-db-network
+
+  # ===========================================================================
+  # Redis Cache
+  # ===========================================================================
+  redis:
+    image: redis:8-alpine
+    container_name: sub2api-redis
+    restart: unless-stopped
+    ulimits:
+      nofile:
+        soft: 100000
+        hard: 100000
+    ports:
+      - "${REDIS_PORT:-6379}:6379"
+    volumes:
+      - ./redis_data:/data:Z
+    command: >
+      sh -c '
+        redis-server
+        --save 60 1
+        --appendonly yes
+        --appendfsync everysec
+        --maxclients ${REDIS_MAXCLIENTS:-50000}
+        ${REDIS_PASSWORD:+--requirepass "$REDIS_PASSWORD"}'
+    environment:
+      - TZ=${TZ:-Asia/Shanghai}
+      - REDISCLI_AUTH=${REDIS_PASSWORD:-}
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 5s
+    networks:
+      - sub2api-db-network
+
+# =============================================================================
+# Networks
+# =============================================================================
+networks:
+  sub2api-db-network:
+    driver: bridge
