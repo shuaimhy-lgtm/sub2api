@@ -620,6 +620,7 @@
       <nav class="primary-nav" aria-label="主导航">
         <a class="nav-link" href="#overview">首页</a>
         <a class="nav-link" href="#login" aria-current="page">登录</a>
+        <a class="nav-link" href="#register">注册</a>
         <a class="nav-link" href="#tools">工具配置</a>
         <a class="nav-link" href="#code">代码调用</a>
       </nav>
@@ -633,6 +634,7 @@
       <nav class="section-nav" aria-label="页面分类">
         <a href="#overview" aria-current="page">概览</a>
         <a href="#login">登录</a>
+        <a href="#register">注册</a>
         <a href="#key">密钥</a>
         <a href="#base-url">Base URL</a>
         <a href="#windows">Windows</a>
@@ -653,6 +655,7 @@
       <h2>开始使用</h2>
       <a class="active" href="#overview">一眼看懂 LLMFerry</a>
       <a href="#login">登录控制台</a>
+      <a href="#register">注册账号</a>
       <a href="#key">创建和复制 API Key</a>
       <h2>工具配置</h2>
       <a href="#base-url">Base URL 怎么填</a>
@@ -695,7 +698,7 @@
             </div>
             <div class="quick-card">
               <strong>优先测试模型</strong>
-              <span>先用管理员指定模型；没有指定时可先尝试 <code>gpt-5.5</code>。</span>
+              <span>先用销售提供的模型；没有明确说明时可先尝试 <code>gpt-5.5</code>。</span>
             </div>
           </div>
 
@@ -705,26 +708,25 @@
           </div>
 
           <figure>
-            <img src="/user-manual/assets/llmferry-01-home.png" alt="LLMFerry 首页：简链服务、立即开始按钮和已支持模型列表">
+            <img src="assets/llmferry-01-home.png" alt="LLMFerry 首页：简链服务、立即开始按钮和功能标签">
             <figcaption>LLMFerry 首页：确认进入的是“简链服务”站点。</figcaption>
           </figure>
         </section>
 
         <section id="login">
           <h2>登录 LLMFerry</h2>
-          <p>普通用户进入控制台后，主要关注「API 密钥」「使用记录」「渠道状态」「我的订阅」等个人使用菜单。管理员菜单不用操作。</p>
+          <p>普通用户进入控制台后，主要关注左侧「我的账户」下面的「API 密钥」「使用记录」「渠道状态」「我的订阅」等个人使用菜单。</p>
 
           <dl class="response-preview">
             <dt>登录地址</dt><dd id="login-url">https://www.llmferry.com/home</dd>
-            <dt>账号</dt><dd id="login-account">admin@sub2api.local</dd>
-            <dt>密码</dt><dd id="login-password">LS123xzhmu</dd>
+            <dt>账号</dt><dd>使用自己注册的邮箱，或由您的销售协助开通的账号</dd>
+            <dt>密码</dt><dd>使用自己设置的密码；手册不提供公共密码</dd>
+            <dt>注册入口</dt><dd>登录页底部点击「还没有账户？注册」</dd>
             <dt>站点名称</dt><dd>简链服务</dd>
           </dl>
 
           <div class="toc-tools copy-row">
             <button class="copy-button" type="button" data-copy-target="login-url">复制地址</button>
-            <button class="copy-button" type="button" data-copy-target="login-account">复制账号</button>
-            <button class="copy-button" type="button" data-copy-target="login-password">复制密码</button>
           </div>
 
           <div class="steps">
@@ -733,8 +735,12 @@
               <p>在浏览器访问 <code>https://www.llmferry.com/home</code>。如果页面没有自动跳到登录页，点击右上角「登录」。</p>
             </div>
             <div class="step">
-              <h3>输入账号密码</h3>
-              <p>使用管理员提供的账号登录。正式给客户使用时，建议换成每位用户自己的企业账号。</p>
+              <h3>没有账号先注册</h3>
+              <p>在登录页底部点击「还没有账户？注册」。具体填写方式见下一节「注册账号」。</p>
+            </div>
+            <div class="step">
+              <h3>已有账号直接登录</h3>
+              <p>使用自己注册的邮箱和密码登录。不要使用他人的账号，也不要多人共用同一个账号。</p>
             </div>
             <div class="step">
               <h3>找到个人菜单</h3>
@@ -743,13 +749,63 @@
           </div>
 
           <div class="callout">
-            <strong>给客户发正式版前先确认账号策略</strong>
-            <p>如果这个账号只用于演示或培训，请不要把它长期公开到客户群；正式环境建议让客户使用企业邮箱或单独账号登录。</p>
+            <strong>不要共享账号</strong>
+            <p>每位用户都应使用自己的账号登录，便于密钥、用量和费用独立管理。如果注册失败或看不到注册入口，请联系您的销售协助开通。</p>
           </div>
 
           <figure>
-            <img src="/user-manual/assets/llmferry-02-login.png" alt="LLMFerry 登录页：输入邮箱和密码后点击登录">
-            <figcaption>登录页：输入企业邮箱和密码，点击「登录」。</figcaption>
+            <img src="assets/llmferry-02-login.png" alt="LLMFerry 登录页：输入邮箱和密码后点击登录">
+            <figcaption>登录页：已有账号直接登录；没有账号时点击底部「注册」。</figcaption>
+          </figure>
+        </section>
+
+        <section id="register">
+          <h2>注册账号</h2>
+          <p>如果还没有自己的 LLMFerry 账号，先从登录页进入注册页。注册时只填写个人或企业邮箱和自己设置的密码；优惠码没有则留空。</p>
+
+          <dl class="response-preview">
+            <dt>注册入口</dt><dd>登录页底部点击「还没有账户？注册」</dd>
+            <dt>直接地址</dt><dd id="register-url">https://www.llmferry.com/register</dd>
+            <dt>邮箱</dt><dd>建议使用常用邮箱，便于后续识别账号和处理服务开通</dd>
+            <dt>密码</dt><dd>自己设置并妥善保存，页面要求至少 6 个字符</dd>
+            <dt>优惠码</dt><dd>可选；销售没有单独提供时，直接留空</dd>
+          </dl>
+
+          <div class="toc-tools copy-row">
+            <button class="copy-button" type="button" data-copy-target="register-url">复制注册地址</button>
+          </div>
+
+          <div class="steps">
+            <div class="step">
+              <h3>进入注册页</h3>
+              <p>打开 <code>https://www.llmferry.com/home</code>，在登录页底部点击「还没有账户？注册」。也可以直接访问 <code>https://www.llmferry.com/register</code>。</p>
+            </div>
+            <div class="step">
+              <h3>填写邮箱</h3>
+              <p>在「邮箱」输入框填写自己的常用邮箱。不要填写他人的邮箱，也不要多人共用同一个邮箱账号。</p>
+            </div>
+            <div class="step">
+              <h3>设置密码</h3>
+              <p>在「密码」输入框设置自己的登录密码。密码至少 6 个字符，建议不要和其他系统使用完全相同的密码。</p>
+            </div>
+            <div class="step">
+              <h3>优惠码没有就留空</h3>
+              <p>「优惠码」是可选项。只有您的销售明确给了优惠码时才填写；没有拿到优惠码时，保持空白即可。</p>
+            </div>
+            <div class="step">
+              <h3>创建账户并登录</h3>
+              <p>点击「创建账户」。注册成功后回到登录页，用刚才填写的邮箱和密码登录控制台。</p>
+            </div>
+          </div>
+
+          <div class="callout">
+            <strong>注册失败怎么办</strong>
+            <p>如果看不到注册入口、注册失败、提示邮箱不可用，或登录后看不到「API 密钥」菜单，请联系您的销售协助开通账号或确认权限。</p>
+          </div>
+
+          <figure>
+            <img src="assets/llmferry-03-register.png" alt="LLMFerry 注册页：填写邮箱、密码和可选优惠码后创建账户">
+            <figcaption>注册页：填写自己的邮箱和密码；优惠码没有则留空。</figcaption>
           </figure>
         </section>
 
@@ -760,11 +816,11 @@
           <div class="steps">
             <div class="step">
               <h3>进入 API 密钥页面</h3>
-              <p>登录后，在左侧菜单找到「API 密钥」。如果看不到，请联系管理员确认账号权限或套餐分组。</p>
+              <p>登录后，在左侧「我的账户」区域找到「API 密钥」。如果看不到，请联系您的销售确认账号开通、套餐或分组。</p>
             </div>
             <div class="step">
               <h3>点击创建密钥</h3>
-              <p>名称写清楚用途；分组选择管理员指定的分组；普通用户通常不用开启「自定义密钥」。</p>
+              <p>名称写清楚用途；分组选择页面可用的分组。如果不确定选哪个分组，请联系您的销售确认。普通用户通常不用开启「自定义密钥」。</p>
             </div>
             <div class="step">
               <h3>复制 sk- 开头的密钥</h3>
@@ -779,13 +835,13 @@
           <div class="figure-grid">
             <div class="figure-card">
               <figure>
-                <img src="/user-manual/assets/llmferry-03-api-key-page.png" alt="LLMFerry API 密钥页面：左侧进入 API 密钥，右上角创建密钥">
-                <figcaption>API 密钥页面：入口和创建按钮位置示意。</figcaption>
+                <img src="assets/llmferry-03-api-key-page.png" alt="LLMFerry API 密钥页面：普通用户侧栏、空状态和创建密钥按钮">
+                <figcaption>普通用户 API 密钥页面：没有密钥时会看到空状态，可点击右上角或页面中间的「创建密钥」。</figcaption>
               </figure>
             </div>
             <div class="figure-card">
               <figure>
-                <img src="/user-manual/assets/llmferry-04-create-key-modal.png" alt="LLMFerry 创建密钥弹窗：填写名称、选择分组和配置限制">
+                <img src="assets/llmferry-04-create-key-modal.png" alt="LLMFerry 创建密钥弹窗：填写名称、选择分组和配置限制">
                 <figcaption>创建密钥：重点确认名称、分组、额度和有效期。</figcaption>
               </figure>
             </div>
@@ -830,7 +886,7 @@
             <dt>Provider</dt><dd>OpenAI Compatible / OpenAI 兼容</dd>
             <dt>API Key</dt><dd>粘贴你的 sk-... 密钥</dd>
             <dt>Base URL</dt><dd>https://www.llmferry.com/v1</dd>
-            <dt>Model</dt><dd>先填管理员指定模型；没有指定时先试 gpt-5.5</dd>
+            <dt>Model</dt><dd>先填销售提供的模型；没有明确说明时先试 gpt-5.5</dd>
             <dt>测试问题</dt><dd>Reply with exactly: pong</dd>
           </dl>
 
@@ -838,7 +894,7 @@
           <p>在「API 密钥」页面找到密钥，点击「使用密钥」，选择 Codex CLI 和 Windows。按页面提示复制到下面两个文件。</p>
 
           <figure>
-            <img src="/user-manual/assets/llmferry-06-use-key-modal-windows.png" alt="LLMFerry 使用 API 密钥弹窗：Windows 配置示例">
+            <img src="assets/llmferry-06-use-key-modal-windows.png" alt="LLMFerry 使用 API 密钥弹窗：Windows 配置示例">
             <figcaption>使用 API 密钥弹窗：Windows 用户选择「Windows」后复制对应配置。</figcaption>
           </figure>
 
@@ -904,7 +960,7 @@ $env:CLAUDE_CODE_ATTRIBUTION_HEADER = "0"</code></pre>
             <dt>Provider</dt><dd>OpenAI Compatible / OpenAI 兼容</dd>
             <dt>API Key</dt><dd>粘贴你的 sk-... 密钥</dd>
             <dt>Base URL</dt><dd>https://www.llmferry.com/v1</dd>
-            <dt>Model</dt><dd>先填管理员指定模型；没有指定时先试 gpt-5.5</dd>
+            <dt>Model</dt><dd>先填销售提供的模型；没有明确说明时先试 gpt-5.5</dd>
             <dt>测试问题</dt><dd>Reply with exactly: pong</dd>
           </dl>
 
@@ -912,7 +968,7 @@ $env:CLAUDE_CODE_ATTRIBUTION_HEADER = "0"</code></pre>
           <p>在「API 密钥」页面点击「使用密钥」，选择 Codex CLI 和 macOS / Linux。配置目录是 <code>~/.codex</code>；如果文件夹不存在，先运行 <code>mkdir -p ~/.codex</code>。</p>
 
           <figure>
-            <img src="/user-manual/assets/llmferry-05-use-key-modal-macos.png" alt="LLMFerry 使用 API 密钥弹窗：macOS 和 Linux 配置示例">
+            <img src="assets/llmferry-05-use-key-modal-macos.png" alt="LLMFerry 使用 API 密钥弹窗：macOS 和 Linux 配置示例">
             <figcaption>使用 API 密钥弹窗：macOS 用户选择「macOS / Linux」后复制对应配置。</figcaption>
           </figure>
 
@@ -946,7 +1002,7 @@ goals = true</code></pre>
           <p>Finder 打开配置目录：按 <code>Command + Shift + G</code>，输入 <code>~/.codex</code>。</p>
 
           <h3>方式 C：Claude Code / CC Switch</h3>
-          <p>macOS 用户也推荐优先用 CC Switch。供应商名称填 <code>LLMFerry</code>，Base URL 填 <code>https://www.llmferry.com/</code>，模型映射按管理员要求填写。</p>
+          <p>macOS 用户也推荐优先用 CC Switch。供应商名称填 <code>LLMFerry</code>，Base URL 填 <code>https://www.llmferry.com/</code>，模型映射按销售提供的说明填写。</p>
 
           <div class="code-block">
             <div class="code-caption"><span>macOS 终端临时生效</span><button class="copy-button" type="button" data-copy-target="code-mac-claude-env">复制</button></div>
@@ -983,7 +1039,7 @@ export CLAUDE_CODE_ATTRIBUTION_HEADER=0</code></pre>
             </div>
             <div class="step">
               <h3>使用 Claude Code</h3>
-              <p>优先用 CC Switch；管理员要求手动配置时，再写环境变量或 <code>settings.json</code>。</p>
+              <p>优先用 CC Switch；如果销售提供的说明要求手动配置，再写环境变量或 <code>settings.json</code>。</p>
             </div>
           </div>
         </section>
@@ -995,7 +1051,7 @@ export CLAUDE_CODE_ATTRIBUTION_HEADER=0</code></pre>
           <dl class="response-preview">
             <dt>API Key</dt><dd>你的 sk-... 密钥</dd>
             <dt>Base URL</dt><dd>https://www.llmferry.com/v1</dd>
-            <dt>模型</dt><dd>管理员指定模型，或先用 gpt-5.5 测试</dd>
+            <dt>模型</dt><dd>销售提供的模型，或先用 gpt-5.5 测试</dd>
             <dt>协议</dt><dd>OpenAI 兼容接口</dd>
           </dl>
 
@@ -1080,7 +1136,7 @@ $env:OPENAI_BASE_URL = "https://www.llmferry.com/v1"</code></pre>
 
         <section id="usage">
           <h2>查看用量和费用</h2>
-          <p>配置成功后，回到控制台的「使用记录」查看每次调用的模型、时间、Token 和费用。如果发现异常高用量，先禁用对应 API Key，再联系管理员排查。</p>
+          <p>配置成功后，回到控制台的「使用记录」查看每次调用的模型、时间、Token 和费用。如果发现异常高用量，先禁用对应 API Key，再联系您的销售协助确认。</p>
         </section>
 
         <section id="faq">
@@ -1088,9 +1144,9 @@ $env:OPENAI_BASE_URL = "https://www.llmferry.com/v1"</code></pre>
           <dl class="response-preview">
             <dt>401</dt><dd>API Key 没填、填错、复制少字符，或认证格式不对。重新复制完整 sk-... 再试。</dd>
             <dt>404</dt><dd>Base URL 或模型名写错。OpenAI 兼容场景要用 https://www.llmferry.com/v1。</dd>
-            <dt>429</dt><dd>请求太频繁或额度受限。稍等再试，或联系管理员调整额度、并发或速率限制。</dd>
-            <dt>5xx</dt><dd>服务临时异常。稍后重试；如果一直失败，查看渠道状态或联系管理员。</dd>
-            <dt>在家不能用</dt><dd>可能密钥开启了 IP 限制。连接公司 VPN 后再试，或联系管理员调整。</dd>
+            <dt>429</dt><dd>请求太频繁或额度受限。稍等再试；如果持续出现，请联系您的销售确认额度、并发或速率限制。</dd>
+            <dt>5xx</dt><dd>服务临时异常。稍后重试；如果一直失败，请查看渠道状态，或联系您的销售协助确认。</dd>
+            <dt>当前网络无法使用</dt><dd>可能是账号、额度、IP 限制或网络策略导致。换一个稳定网络重试；仍失败时联系您的销售确认。</dd>
             <dt>前端网页能写 Key 吗</dt><dd>不能。前端、浏览器 JavaScript、移动端安装包都容易暴露 Key，应由后端代调。</dd>
           </dl>
         </section>
@@ -1103,7 +1159,7 @@ $env:OPENAI_BASE_URL = "https://www.llmferry.com/v1"</code></pre>
             <li>能复制到以 <code>sk-</code> 开头的 API Key</li>
             <li>IDE 或工具里 API Key 已填写完整</li>
             <li>Base URL 没写错，尤其注意不要把 <code>/home</code> 填进去</li>
-            <li>模型先用管理员指定模型或 <code>gpt-5.5</code> 测试</li>
+            <li>模型先用销售提供的模型或 <code>gpt-5.5</code> 测试</li>
             <li>测试问题 <code>Reply with exactly: pong</code> 能正常返回</li>
             <li>「使用记录」里能看到刚才的调用记录</li>
           </ul>
@@ -1125,6 +1181,7 @@ $env:OPENAI_BASE_URL = "https://www.llmferry.com/v1"</code></pre>
       <strong>本页内容</strong>
       <a class="active" href="#overview">一眼看懂</a>
       <a href="#login">登录控制台</a>
+      <a href="#register">注册账号</a>
       <a href="#key">创建 API Key</a>
       <a href="#base-url">Base URL</a>
       <a href="#windows">Windows 配置</a>

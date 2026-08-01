@@ -49,7 +49,7 @@ export default {
       unifiedGateway: 'One-Click Access',
       unifiedGatewayDesc: 'Get a single API key to call all connected AI models. No separate applications needed.',
       multiAccount: 'Always Reliable',
-      multiAccountDesc: 'Smart routing across multiple upstream accounts with automatic failover. Say goodbye to errors.',
+      multiAccountDesc: 'Smart routing across multiple providers with automatic failover. Say goodbye to errors.',
       balanceQuota: 'Pay What You Use',
       balanceQuotaDesc: 'Usage-based billing with quota limits. Full visibility into team consumption.'
     },
